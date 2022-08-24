@@ -1,9 +1,7 @@
+import CashierPageLayout from "./cashierPageLayout";
+
 function CashierPageAction() {
-    return (
-        <div className="">
-            CashierPageAction
-        </div>
-    );
+  return <CashierPageLayout page={1}>fg</CashierPageLayout>;
 }
 
 export default CashierPageAction;

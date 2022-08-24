@@ -1,9 +1,7 @@
+import CashierPageLayout from "./cashierPageLayout";
+
 function CashierPageDessert() {
-    return (
-        <div className="">
-            CashierPageDessert
-        </div>
-    );
+  return <CashierPageLayout page={2}>dfg</CashierPageLayout>;
 }
 
 export default CashierPageDessert;
