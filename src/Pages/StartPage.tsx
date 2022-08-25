@@ -1,18 +1,22 @@
 import OrderItem from "../Components/OrderItem";
 import { useAppDispatch, useAppSelector } from "../hooks/reduxHook";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchOrders, OrderState } from "../redux/Slices/orderSlice";
+import { fetchOrders } from "../redux/Slices/Order/orderSlice";
 import { RootState } from "../redux/store";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { log } from "util";
+import { getPizzas } from "../redux/Slices/Pizza/pizzaSlice";
 
 function StartPage() {
-  const orders = useSelector((state: RootState) => state.order);
-  const [order, setOrder] = useState([]);
-  const dispatch = useDispatch();
+  const orders = useAppSelector((state: RootState) => state.order);
+  const pizzas = useAppSelector((state: RootState) => state.pizza);
+  const dispatch = useAppDispatch();
   useEffect(() => {
-    orders.length === 0 ? dispatch(fetchOrders()) : console.log(orders);
+    orders.titleOrder.length === 0
+      ? dispatch(fetchOrders()) && console.log(orders)
+      : console.log("Ошибка при  запросе заказов");
+    pizzas.length === 0
+      ? dispatch(getPizzas()) && console.log(pizzas)
+      : console.log("Ошибка при  запросе пицц");
   }, []);
 
   return (
@@ -36,7 +40,7 @@ function StartPage() {
           </div>
         </div>
         <div className="flex justify-between flex-wrap ">
-          {orders.map((value, index) => (
+          {orders.titleOrder.map((value) => (
             <OrderItem key={"key" + value.id} date={value} />
           ))}
         </div>

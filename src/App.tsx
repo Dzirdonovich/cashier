@@ -9,6 +9,8 @@ import CashierPageDrink from "./Pages/cashierPageCategory/CashierPageDrink";
 import CashierPagePizzas from "./Pages/cashierPageCategory/CashierPagePizzas";
 import CashierPageSnack from "./Pages/cashierPageCategory/CashierPageSnack";
 function App() {
+  // @ts-ignore
+  console.log(Number.isFinite("0"));
   return (
     <div className="w-screen h-screen bg-gray-500">
       <Routes>
