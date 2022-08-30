@@ -2,6 +2,7 @@ import CashierPageLayout from "./cashierPageLayout";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHook";
 import { useEffect } from "react";
 import { getPizzas } from "../../redux/Slices/Pizza/pizzaSlice";
+import CashierItem from "../../Components/cashierItem";
 
 function CashierPagePizzas() {
   const pizzas = useAppSelector((state) => state.pizza);
@@ -14,7 +15,11 @@ function CashierPagePizzas() {
 
   return (
     <CashierPageLayout page={0}>
-      {pizzas.map((value) => value.name)}
+      <div className="flex flex-wrap justify-between p-10">
+        {pizzas.map((value) => (
+          <CashierItem pizza={value} />
+        ))}
+      </div>
     </CashierPageLayout>
   );
 }

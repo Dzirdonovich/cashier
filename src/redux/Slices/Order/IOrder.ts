@@ -1,7 +1,9 @@
+import { IPizza } from "../Pizza/IPizza";
+
 export interface IOrderPizza {
   id: number;
   name: string;
-  size: number;
+  price: number;
 }
 export interface IOrderDrink {
   id: number;
@@ -19,13 +21,30 @@ export interface ITitleOrder {
 
 export interface ICurrentOrder {
   id: number;
-  number: string;
+  currentPrice: number;
+  orderChosen: boolean;
+  itemChosen: boolean;
+  number: number | string;
   date: string;
   name: string;
-  price: number | string;
+  price: number;
   place: number;
-  pizzas: IOrderPizza[];
+  pizzas: IPizza[];
   drink: IOrderDrink[];
+}
+
+interface IEndPayloadOrder {
+  id: number;
+  number: number;
+  date: string;
+  name: string;
+  price: number;
+  place: number;
+  pizzas: IPizza[];
+  drink: IOrderDrink[];
+}
+export interface IEndOrder {
+  payload: IEndPayloadOrder;
 }
 
 export interface IOrderState {
@@ -39,8 +58,9 @@ export interface IPayloadTitleOrder {
       number: string;
       date: string;
       name: string;
-      price: number | string;
+      price: number;
       status: string;
+      pizzas: IPizza[];
     }
   ];
 }

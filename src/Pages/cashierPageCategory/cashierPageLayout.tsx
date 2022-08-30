@@ -2,8 +2,15 @@ import { Link } from "react-router-dom";
 // @ts-ignore
 import pizzaIMG from "../../static/image/pizza.png";
 import { useEffect, useState } from "react";
-import { useAppSelector } from "../../hooks/reduxHook";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHook";
 import { getPadTime } from "../../utils/getPadTime";
+import CashierOrderItem from "../../Components/CashierOrderItem";
+import ChangeItem from "../../Components/ChangeItem";
+import {
+  fetchOrders,
+  postOrders,
+  setPlaceOrder,
+} from "../../redux/Slices/Order/orderSlice";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -23,9 +30,20 @@ function CashierPageLayout({ children, page }: LayoutProps) {
   const [time, setTime] = useState(0);
   const [place, setPlace] = useState(0);
   const currentOrder = useAppSelector((state) => state.order.currentOrder);
-
+  const allState = useAppSelector((state) => state.order);
   const minutes: any = getPadTime(Math.floor(time / 60));
   const seconds = getPadTime(time - minutes * 60);
+  const places: string[] = ["В зале", "С собой"];
+  const dispatch = useAppDispatch();
+
+  const onClickHandler = () => {
+    dispatch(postOrders(allState));
+    dispatch(fetchOrders());
+  };
+  const onclickPlaceHandler = (index: number) => {
+    setPlace(index);
+    dispatch(setPlaceOrder(index));
+  };
   useEffect(() => {
     const interval = setInterval(() => {
       setTime((time) => time + 1);
@@ -56,34 +74,45 @@ function CashierPageLayout({ children, page }: LayoutProps) {
           </div>
           <div className="text-sm w-full">{minutes + ":" + seconds}</div>
           <div className=" rounded-md bg-gray-500 w-full flex justify-between items-center overflow-hidden ">
-            <span
-              onClick={() => {
-                setPlace(0);
-              }}
-              className={
-                place === 0
-                  ? " text-center bg-blue-500  w-1/2 px-5 py-2"
-                  : "text-center  w-1/2 px-5 py-2"
-              }
-            >
-              В зале
-            </span>
-            <span
-              onClick={() => {
-                setPlace(1);
-              }}
-              className={
-                place === 1
-                  ? " text-center bg-blue-500  w-1/2 px-5 py-2"
-                  : "text-center  w-1/2 px-5 py-2"
-              }
-            >
-              С собой
-            </span>
+            {places.map((value, index) => (
+              <span
+                onClick={() => {
+                  onclickPlaceHandler(index);
+                }}
+                className={
+                  place === index
+                    ? " text-center bg-blue-500  w-1/2 px-5 py-2 cursor-pointer"
+                    : "text-center  w-1/2 px-5 py-2 cursor-pointer"
+                }
+              >
+                {value}
+              </span>
+            ))}
           </div>
         </div>
-        <div className="flex flex-col h-3/5"></div>
-        <div className="flex h-24"></div>
+        <div className="flex flex-col h-3/5">
+          {currentOrder.itemChosen ? (
+            <ChangeItem
+              pizza={currentOrder.pizzas[currentOrder.pizzas.length - 1]}
+            />
+          ) : (
+            ""
+          )}
+          {currentOrder.orderChosen
+            ? currentOrder.pizzas.map((value) => (
+                <CashierOrderItem pizza={value} />
+              ))
+            : ""}
+        </div>
+        <div className="flex h-24">
+          <button
+            type="submit"
+            onClick={onClickHandler}
+            className=" text-center text-blue-100 w-full rounded-md bg-blue-500 m-4"
+          >
+            Добавить
+          </button>
+        </div>
       </div>
     </div>
   );
