@@ -1,7 +1,11 @@
 import CashierPageLayout from "./cashierPageLayout";
 
 function CashierPageSnack() {
-  return <CashierPageLayout page={4}>df</CashierPageLayout>;
+  return (
+    <CashierPageLayout timeOrder={0} page={4}>
+      df
+    </CashierPageLayout>
+  );
 }
 
 export default CashierPageSnack;

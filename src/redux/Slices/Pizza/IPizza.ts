@@ -4,6 +4,7 @@ export interface IPizza {
   price: number;
   count: number;
   size: number;
+  xes: number;
 }
 
 export interface IPayloadPizza {

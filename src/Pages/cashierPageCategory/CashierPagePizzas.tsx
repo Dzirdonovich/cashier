@@ -14,7 +14,7 @@ function CashierPagePizzas() {
   });
 
   return (
-    <CashierPageLayout page={0}>
+    <CashierPageLayout timeOrder={0} page={0}>
       <div className="flex flex-wrap justify-between p-10">
         {pizzas.map((value) => (
           <CashierItem pizza={value} />

@@ -1,23 +1,26 @@
 import { PropsIPizza } from "./cashierItem";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks/reduxHook";
-import { setCurrentPizzaPrice } from "../redux/Slices/Order/orderSlice";
+import { setItemSize, setItemXes } from "../redux/Slices/Order/orderSlice";
 
 function ChangeItem({ pizza }: PropsIPizza) {
   const sizes: number[] = [25, 30, 35];
   const xes: number[] = [1, 1.5, 2];
-  const [currentPrice, setCurrentPrice] = useState(0);
   const [currentSize, setCurrentSize] = useState(0);
 
   const currentOrder = useAppSelector((state) => state.order.currentOrder);
   const dispatch = useAppDispatch();
-  const onClickHandler = (index: number) => {
-    setCurrentSize(index);
-    console.log(currentOrder);
-  };
   useEffect(() => {
-    dispatch(setCurrentPizzaPrice(currentPrice));
-  });
+    dispatch(setItemSize(sizes[0]));
+    dispatch(setItemXes(xes[0]));
+  }, []);
+
+  const onClickHandler = (index: number, value: number) => {
+    setCurrentSize(index);
+    dispatch(setItemSize(value));
+    dispatch(setItemXes(xes[index]));
+  };
+
   return (
     <div className="flex flex-col ">
       <span className="text-center font-bold">{pizza.name}</span>
@@ -27,7 +30,7 @@ function ChangeItem({ pizza }: PropsIPizza) {
         <div className="flex justify-between text-center rounded-md overflow-hidden mt-4">
           {sizes.map((value, index) => (
             <div
-              onClick={() => onClickHandler(index)}
+              onClick={() => onClickHandler(index, value)}
               className={
                 currentSize === index
                   ? "bg-blue-500 w-1/3"
@@ -40,13 +43,7 @@ function ChangeItem({ pizza }: PropsIPizza) {
                     {value}
                   </div>
 
-                  <div
-                    onClick={() => {
-                      setCurrentPrice(currentOrder.currentPrice * xes[index]);
-                    }}
-                  >
-                    {currentOrder.currentPrice * xes[index]} Р
-                  </div>
+                  <div>{currentOrder.currentItem.price * xes[index]} Р</div>
                 </div>
               }
             </div>

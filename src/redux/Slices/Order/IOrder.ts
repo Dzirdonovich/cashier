@@ -21,9 +21,10 @@ export interface ITitleOrder {
 
 export interface ICurrentOrder {
   id: number;
-  currentPrice: number;
+  timeOrder: number;
   orderChosen: boolean;
   itemChosen: boolean;
+  currentItem: IPizza;
   number: number | string;
   date: string;
   name: string;

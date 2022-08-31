@@ -8,7 +8,15 @@ const initialState: IOrderState = {
   currentOrder: {
     orderChosen: false,
     itemChosen: false,
-    currentPrice: 0,
+    timeOrder: 0,
+    currentItem: {
+      id: 0,
+      price: 0,
+      name: "",
+      count: 1,
+      size: 0,
+      xes: 0,
+    },
     id: 0,
     number: 0,
     date: "",
@@ -31,7 +39,7 @@ export const postOrders: any = createAsyncThunk(
   "orders/postOrders",
 
   async (state: IOrderState) => {
-    const { orderChosen, itemChosen, currentPrice, ...order } =
+    const { orderChosen, itemChosen, currentItem, ...order } =
       state.currentOrder;
     order.number =
       state.titleOrder.length +
@@ -42,12 +50,11 @@ export const postOrders: any = createAsyncThunk(
       ":" +
       getPadTime(new Date(Date.now()).getMinutes()).toString();
     order.name = "кто-то";
-    order.pizzas.forEach((value) => {
-      order.price += value.price;
-    });
 
     const { data } = await axios.post("http://localhost:3001/orders", order);
+
     console.log(data);
+    state.titleOrder = [];
   }
 );
 
@@ -61,20 +68,61 @@ export const orderSlice = createSlice({
     setOrderChosen(state, { payload }) {
       state.currentOrder.orderChosen = payload;
     },
-    setOrderPizza(state, { payload }) {
-      state.currentOrder.pizzas.push(payload);
+    setOrderPizza(state) {
+      state.currentOrder.price =
+        state.currentOrder.price +
+        state.currentOrder.currentItem.price *
+          state.currentOrder.currentItem.xes;
+      state.currentOrder.pizzas.push({
+        ...state.currentOrder.currentItem,
+        count: 1,
+      });
     },
+
+    setOrderPrice(state, { payload }) {
+      payload.action === "MINUS"
+        ? (state.currentOrder.price -= payload.price * payload.xes)
+        : (state.currentOrder.price += payload.price * payload.xes);
+    },
+
     setItemOrder(state, { payload }) {
       console.log(payload);
       state.currentOrder.itemChosen = payload;
     },
-
-    setCurrentPizzaPrice(state, { payload }) {
-      state.currentOrder.pizzas[state.currentOrder.pizzas.length - 1].price =
-        payload;
+    setCountPizza(state, { payload }) {
+      console.log(payload);
+      payload.action === "MINUS"
+        ? state.currentOrder.pizzas.filter(
+            (value) =>
+              value.name === payload.name && value.size === payload.size
+          )[0].count--
+        : state.currentOrder.pizzas.filter(
+            (value) =>
+              value.name === payload.name && value.size === payload.size
+          )[0].count++;
     },
-    setCurrentPrice(state, { payload }) {
-      state.currentOrder.currentPrice = payload;
+
+    setCurrentItem(state, { payload }) {
+      state.currentOrder.currentItem = payload;
+      console.log(state.currentOrder.currentItem);
+    },
+    setItemSize(state, { payload }) {
+      state.currentOrder.currentItem.size = payload;
+    },
+    setItemXes(state, { payload }) {
+      state.currentOrder.currentItem.xes = payload;
+    },
+
+    getOrderPizza(state) {
+      state.currentOrder.itemChosen = false;
+      state.currentOrder.orderChosen = true;
+    },
+    hideOrder(state) {
+      state.currentOrder.itemChosen = true;
+      state.currentOrder.orderChosen = false;
+    },
+    setTimeOrder(state, { payload }) {
+      state.currentOrder.timeOrder = payload;
     },
   },
   extraReducers: (builder) => {
@@ -100,10 +148,15 @@ export const orderSlice = createSlice({
 });
 
 export const {
-  setOrderChosen,
+  setItemSize,
+  setCurrentItem,
   setOrderPizza,
   setItemOrder,
-  setCurrentPizzaPrice,
   setPlaceOrder,
-  setCurrentPrice,
+  getOrderPizza,
+  setItemXes,
+  hideOrder,
+  setCountPizza,
+  setOrderPrice,
+  setTimeOrder,
 } = orderSlice.actions;

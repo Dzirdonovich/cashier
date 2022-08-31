@@ -47,7 +47,7 @@ function StartPage() {
         <div></div>
       </div>
       <Link
-        to={"/cashier/action"}
+        to={"/cashier/pizza"}
         className="flex justify-center items-center bg-blue-600 h-full w-1/5 rounded-md "
       >
         <span className="w-1/3 h-1/3 text-9xl text-white flex justify-center items-center">

@@ -8,13 +8,17 @@ import CashierOrderItem from "../../Components/CashierOrderItem";
 import ChangeItem from "../../Components/ChangeItem";
 import {
   fetchOrders,
+  getOrderPizza,
   postOrders,
+  setOrderPizza,
   setPlaceOrder,
+  setTimeOrder,
 } from "../../redux/Slices/Order/orderSlice";
 
 interface LayoutProps {
   children: React.ReactNode;
-  page: number;
+  page?: number;
+  timeOrder: number;
 }
 
 const routes = [
@@ -25,20 +29,30 @@ const routes = [
   "/cashier/snack",
 ];
 
-function CashierPageLayout({ children, page }: LayoutProps) {
+function CashierPageLayout({ children, page, timeOrder }: LayoutProps) {
   const [currentPage, setCurrentPage] = useState(page);
-  const [time, setTime] = useState(0);
+  const [time, setTime] = useState(timeOrder);
   const [place, setPlace] = useState(0);
   const currentOrder = useAppSelector((state) => state.order.currentOrder);
   const allState = useAppSelector((state) => state.order);
   const minutes: any = getPadTime(Math.floor(time / 60));
   const seconds = getPadTime(time - minutes * 60);
   const places: string[] = ["В зале", "С собой"];
+  const [endPage, setEndPage] = useState(page);
+
   const dispatch = useAppDispatch();
 
-  const onClickHandler = () => {
+  const onClickFormalizeHandler = () => {
+    setEndPage(9);
+    dispatch(setTimeOrder(time));
     dispatch(postOrders(allState));
     dispatch(fetchOrders());
+  };
+
+  const onClickHandler = () => {
+    console.log(allState.currentOrder.price);
+    dispatch(setOrderPizza());
+    dispatch(getOrderPizza());
   };
   const onclickPlaceHandler = (index: number) => {
     setPlace(index);
@@ -53,24 +67,26 @@ function CashierPageLayout({ children, page }: LayoutProps) {
   return (
     <div className="flex h-screen ">
       <nav className="w-1/12 bg-stone-800">
-        {routes.map((value, index) => (
-          <Link
-            className={
-              currentPage === index
-                ? "mt-10 w-full h-16  flex justify-center items-center bg-blue-500"
-                : "mt-10 w-full h-16  flex justify-center items-center"
-            }
-            to={value}
-          >
-            <img className={"w-12"} src={pizzaIMG} alt={"pizza"} />
-          </Link>
-        ))}
+        {endPage != 9
+          ? routes.map((value, index) => (
+              <Link
+                className={
+                  currentPage === index
+                    ? "mt-10 w-full h-16  flex justify-center items-center bg-blue-500"
+                    : "mt-10 w-full h-16  flex justify-center items-center"
+                }
+                to={value}
+              >
+                <img className={"w-12"} src={pizzaIMG} alt={"pizza"} />
+              </Link>
+            ))
+          : ""}
       </nav>
       <div className="w-10/12 h-screen">{children}</div>
       <div className="w-3/12 h-screen bg-slate-300 flex flex-col justify-between px-3 pt-5">
         <div className="flex flex-wrap flex-col h-1/6">
           <div className="text-black text-left w-full font-bold text-4xl">
-            {currentOrder.price} Р
+            {allState.currentOrder.price} Р
           </div>
           <div className="text-sm w-full">{minutes + ":" + seconds}</div>
           <div className=" rounded-md bg-gray-500 w-full flex justify-between items-center overflow-hidden ">
@@ -92,9 +108,7 @@ function CashierPageLayout({ children, page }: LayoutProps) {
         </div>
         <div className="flex flex-col h-3/5">
           {currentOrder.itemChosen ? (
-            <ChangeItem
-              pizza={currentOrder.pizzas[currentOrder.pizzas.length - 1]}
-            />
+            <ChangeItem pizza={currentOrder.currentItem} />
           ) : (
             ""
           )}
@@ -105,13 +119,28 @@ function CashierPageLayout({ children, page }: LayoutProps) {
             : ""}
         </div>
         <div className="flex h-24">
-          <button
-            type="submit"
-            onClick={onClickHandler}
-            className=" text-center text-blue-100 w-full rounded-md bg-blue-500 m-4"
-          >
-            Добавить
-          </button>
+          {currentOrder.itemChosen ? (
+            <button
+              type="submit"
+              onClick={onClickHandler}
+              className=" text-center text-blue-100 w-full rounded-md bg-blue-500 m-4"
+            >
+              Добавить
+            </button>
+          ) : (
+            ""
+          )}
+          {currentOrder.pizzas.length != 0 ? (
+            <Link
+              to={"/endPage"}
+              onClick={() => onClickFormalizeHandler()}
+              className=" flex justify-center items-center text-center text-blue-100 w-full rounded-md bg-blue-500 m-4"
+            >
+              Оформить закза
+            </Link>
+          ) : (
+            ""
+          )}
         </div>
       </div>
     </div>
