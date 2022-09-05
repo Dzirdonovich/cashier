@@ -16,7 +16,7 @@ export interface ITitleOrder {
   date: string;
   name: string;
   status: string;
-  price: number | string;
+  price: number;
 }
 
 export interface ICurrentOrder {
@@ -51,6 +51,7 @@ export interface IEndOrder {
 export interface IOrderState {
   titleOrder: ITitleOrder[];
   currentOrder: ICurrentOrder;
+  settings: ISettings;
 }
 export interface IPayloadTitleOrder {
   payload: [
@@ -64,4 +65,8 @@ export interface IPayloadTitleOrder {
       pizzas: IPizza[];
     }
   ];
+}
+export interface ISettings {
+  AVGPrice: number;
+  orders: number;
 }

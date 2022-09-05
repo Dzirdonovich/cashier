@@ -1,6 +1,10 @@
 import OrderItem from "../Components/OrderItem";
 import { useAppDispatch, useAppSelector } from "../hooks/reduxHook";
-import { fetchOrders } from "../redux/Slices/Order/orderSlice";
+import {
+  fetchOrders,
+  setAVGPrice,
+  setOrders,
+} from "../redux/Slices/Order/orderSlice";
 import { RootState } from "../redux/store";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -9,7 +13,10 @@ import { getPizzas } from "../redux/Slices/Pizza/pizzaSlice";
 function StartPage() {
   const orders = useAppSelector((state: RootState) => state.order);
   const pizzas = useAppSelector((state: RootState) => state.pizza);
+  const settings = useAppSelector((state) => state.order.settings);
   const dispatch = useAppDispatch();
+  dispatch(setAVGPrice());
+  dispatch(setOrders());
   useEffect(() => {
     orders.titleOrder.length === 0
       ? dispatch(fetchOrders()) && console.log(orders)
@@ -27,11 +34,13 @@ function StartPage() {
           <div className="flex justify-between">
             <div className="flex flex-col px-2 py-1 text-center">
               <span className="font-medium">Заказов</span>
-              <span className="font-bold">150</span>
+              <span className="font-bold">{settings.orders}</span>
             </div>
             <div className="flex flex-col px-2 py-1 text-center">
               <span className="font-medium">Средний чек</span>
-              <span className="font-bold">590 Р</span>
+              <span className="font-bold">
+                {Math.floor(settings.AVGPrice)} Р
+              </span>
             </div>
             <div className="flex flex-col px-2 py-1 text-center">
               <span className="font-medium">Сркеднее время ожидания</span>

@@ -26,6 +26,10 @@ const initialState: IOrderState = {
     pizzas: [],
     drink: [],
   },
+  settings: {
+    AVGPrice: 0,
+    orders: 0,
+  },
 };
 
 export const fetchOrders: any = createAsyncThunk(
@@ -124,6 +128,16 @@ export const orderSlice = createSlice({
     setTimeOrder(state, { payload }) {
       state.currentOrder.timeOrder = payload;
     },
+    setAVGPrice(state) {
+      let fullPrice = 0;
+      state.titleOrder.map((value) => {
+        fullPrice += value.price;
+      });
+      state.settings.AVGPrice = fullPrice / state.titleOrder.length;
+    },
+    setOrders(state) {
+      state.settings.orders = state.titleOrder.length;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(
@@ -159,4 +173,6 @@ export const {
   setCountPizza,
   setOrderPrice,
   setTimeOrder,
+  setAVGPrice,
+  setOrders,
 } = orderSlice.actions;
