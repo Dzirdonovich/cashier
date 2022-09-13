@@ -19,16 +19,16 @@ function StartPage() {
   dispatch(setOrders());
   useEffect(() => {
     orders.titleOrder.length === 0
-      ? dispatch(fetchOrders()) && console.log(orders)
+      ? dispatch(fetchOrders()) && console.log(orders, orders.titleOrder)
       : console.log("Ошибка при  запросе заказов");
     pizzas.length === 0
       ? dispatch(getPizzas()) && console.log(pizzas)
-      : console.log("Ошибка при  запросе пицц");
-  }, []);
+      : console.log("Ошибка при  запросе пицц", orders.titleOrder);
+  }, [dispatch, pizzas, orders]);
 
   return (
     <div className="p-2 w-full h-full flex justify-between ">
-      <div className=" w-4/5 pr-2 flex flex-col justify-between ">
+      <div className=" w-4/5 pr-2 flex flex-col  ">
         <div className="flex justify-between">
           <div className="font-bold text-4xl">Последние</div>
           <div className="flex justify-between">
@@ -48,7 +48,7 @@ function StartPage() {
             </div>
           </div>
         </div>
-        <div className="flex justify-between flex-wrap ">
+        <div className="flex justify-between flex-wrap max-h-screen">
           {orders.titleOrder.map((value) => (
             <OrderItem key={"key" + value.id} date={value} />
           ))}

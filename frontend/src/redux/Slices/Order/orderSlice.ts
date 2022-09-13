@@ -6,8 +6,6 @@ import { getPadTime } from "../../../utils/getPadTime";
 const initialState: IOrderState = {
   titleOrder: [],
   currentOrder: {
-    orderChosen: false,
-    itemChosen: false,
     timeOrder: 0,
     currentItem: {
       id: 0,
@@ -29,13 +27,17 @@ const initialState: IOrderState = {
   settings: {
     AVGPrice: 0,
     orders: 0,
+    orderChosen: false,
+    itemChosen: false,
+    lastStepChosen: false,
   },
 };
 
 export const fetchOrders: any = createAsyncThunk(
   "orders/fetchOrders",
   async () => {
-    const { data } = await axios.get("http://localhost:3001/orders");
+    const { data } = await axios.get("http://localhost:5000/api/order");
+    console.log(data);
     return data;
   }
 );
@@ -43,8 +45,7 @@ export const postOrders: any = createAsyncThunk(
   "orders/postOrders",
 
   async (state: IOrderState) => {
-    const { orderChosen, itemChosen, currentItem, ...order } =
-      state.currentOrder;
+    const { currentItem, ...order } = state.currentOrder;
     order.number =
       state.titleOrder.length +
       "-" +
@@ -70,7 +71,7 @@ export const orderSlice = createSlice({
       state.currentOrder.place = payload;
     },
     setOrderChosen(state, { payload }) {
-      state.currentOrder.orderChosen = payload;
+      state.settings.orderChosen = payload;
     },
     setOrderPizza(state) {
       state.currentOrder.price =
@@ -91,7 +92,7 @@ export const orderSlice = createSlice({
 
     setItemOrder(state, { payload }) {
       console.log(payload);
-      state.currentOrder.itemChosen = payload;
+      state.settings.itemChosen = payload;
     },
     setCountPizza(state, { payload }) {
       console.log(payload);
@@ -118,12 +119,12 @@ export const orderSlice = createSlice({
     },
 
     getOrderPizza(state) {
-      state.currentOrder.itemChosen = false;
-      state.currentOrder.orderChosen = true;
+      state.settings.itemChosen = false;
+      state.settings.orderChosen = true;
     },
     hideOrder(state) {
-      state.currentOrder.itemChosen = true;
-      state.currentOrder.orderChosen = false;
+      state.settings.itemChosen = true;
+      state.settings.orderChosen = false;
     },
     setTimeOrder(state, { payload }) {
       state.currentOrder.timeOrder = payload;
@@ -138,13 +139,17 @@ export const orderSlice = createSlice({
     setOrders(state) {
       state.settings.orders = state.titleOrder.length;
     },
+    setLastStep(state, { payload }) {
+      state.settings.lastStepChosen = payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(
       fetchOrders.fulfilled,
       (state: IOrderState, { payload }: IPayloadTitleOrder) => {
         state.titleOrder = [];
-        payload.map((value) => {
+        console.log(payload);
+        payload.orders.map((value) => {
           state.titleOrder.push(value);
         });
       }
@@ -175,4 +180,5 @@ export const {
   setTimeOrder,
   setAVGPrice,
   setOrders,
+  setLastStep,
 } = orderSlice.actions;

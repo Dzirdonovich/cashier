@@ -10,6 +10,7 @@ import {
   fetchOrders,
   getOrderPizza,
   postOrders,
+  setLastStep,
   setOrderPizza,
   setPlaceOrder,
   setTimeOrder,
@@ -33,7 +34,7 @@ function CashierPageLayout({ children, page, timeOrder }: LayoutProps) {
   const [currentPage, setCurrentPage] = useState(page);
   const [time, setTime] = useState(timeOrder);
   const [place, setPlace] = useState(0);
-  const currentOrder = useAppSelector((state) => state.order.currentOrder);
+
   const allState = useAppSelector((state) => state.order);
   const minutes: any = getPadTime(Math.floor(time / 60));
   const seconds = getPadTime(time - minutes * 60);
@@ -47,6 +48,11 @@ function CashierPageLayout({ children, page, timeOrder }: LayoutProps) {
     dispatch(setTimeOrder(time));
     dispatch(postOrders(allState));
     dispatch(fetchOrders());
+    dispatch(setLastStep(true));
+  };
+
+  const onClickBack = () => {
+    dispatch(setLastStep(false));
   };
 
   const onClickHandler = () => {
@@ -107,19 +113,19 @@ function CashierPageLayout({ children, page, timeOrder }: LayoutProps) {
           </div>
         </div>
         <div className="flex flex-col h-3/5">
-          {currentOrder.itemChosen ? (
-            <ChangeItem pizza={currentOrder.currentItem} />
+          {allState.settings.itemChosen ? (
+            <ChangeItem pizza={allState.currentOrder.currentItem} />
           ) : (
             ""
           )}
-          {currentOrder.orderChosen
-            ? currentOrder.pizzas.map((value) => (
+          {allState.settings.orderChosen
+            ? allState.currentOrder.pizzas.map((value) => (
                 <CashierOrderItem pizza={value} />
               ))
             : ""}
         </div>
         <div className="flex h-24">
-          {currentOrder.itemChosen ? (
+          {allState.settings.itemChosen ? (
             <button
               type="submit"
               onClick={onClickHandler}
@@ -127,16 +133,23 @@ function CashierPageLayout({ children, page, timeOrder }: LayoutProps) {
             >
               Добавить
             </button>
-          ) : (
-            ""
-          )}
-          {currentOrder.pizzas.length != 0 ? (
+          ) : allState.settings.orderChosen &&
+            !allState.settings.lastStepChosen ? (
             <Link
               to={"/endPage"}
               onClick={() => onClickFormalizeHandler()}
               className=" flex justify-center items-center text-center text-blue-100 w-full rounded-md bg-blue-500 m-4"
             >
-              Оформить закза
+              Оформление заказа
+            </Link>
+          ) : allState.settings.lastStepChosen &&
+            allState.settings.orderChosen ? (
+            <Link
+              className=" flex justify-center items-center text-center text-blue-100 w-full rounded-md bg-blue-500 m-4"
+              onClick={() => onClickBack()}
+              to={"/cashier/pizza"}
+            >
+              Вернутся
             </Link>
           ) : (
             ""

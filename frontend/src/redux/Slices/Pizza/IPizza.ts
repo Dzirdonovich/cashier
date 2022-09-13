@@ -8,5 +8,7 @@ export interface IPizza {
 }
 
 export interface IPayloadPizza {
-  payload: IPizza[];
+  payload: {
+    pizzas: IPizza[];
+  };
 }

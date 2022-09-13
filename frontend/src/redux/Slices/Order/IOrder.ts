@@ -11,19 +11,21 @@ export interface IOrderDrink {
   size: number;
 }
 export interface ITitleOrder {
+  createdAt: string;
   id: number;
   number: string;
-  date: string;
-  name: string;
-  status: string;
+  pizzaOrder: IPizzaOrder[];
+  place: number;
   price: number;
+  time: string;
+  updatedAt: string;
+  name?: string;
 }
 
 export interface ICurrentOrder {
   id: number;
   timeOrder: number;
-  orderChosen: boolean;
-  itemChosen: boolean;
+
   currentItem: IPizza;
   number: number | string;
   date: string;
@@ -53,20 +55,35 @@ export interface IOrderState {
   currentOrder: ICurrentOrder;
   settings: ISettings;
 }
+
+export interface IPizzaOrder {
+  createdAt: string;
+  name: string;
+  OrderId: number;
+  pizzaOrderId: number;
+  size: number;
+  updatedAt: string;
+}
 export interface IPayloadTitleOrder {
-  payload: [
-    {
-      id: number;
-      number: string;
-      date: string;
-      name: string;
-      price: number;
-      status: string;
-      pizzas: IPizza[];
-    }
-  ];
+  payload: {
+    orders: [
+      {
+        createdAt: string;
+        id: number;
+        number: string;
+        pizzaOrder: IPizzaOrder[];
+        place: number;
+        price: number;
+        time: string;
+        updatedAt: string;
+      }
+    ];
+  };
 }
 export interface ISettings {
   AVGPrice: number;
   orders: number;
+  orderChosen: boolean;
+  itemChosen: boolean;
+  lastStepChosen: boolean;
 }

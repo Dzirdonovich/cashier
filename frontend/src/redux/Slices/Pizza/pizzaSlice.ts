@@ -5,7 +5,7 @@ import { IPayloadPizza, IPizza } from "./IPizza";
 const initialState: IPizza[] = [];
 
 export const getPizzas: any = createAsyncThunk("Pizzas/getPizzas", async () => {
-  const { data } = await axios.get("http://localhost:3001/pizzas");
+  const { data } = await axios.get("http://localhost:5000/api/pizza");
   return data;
 });
 
@@ -17,7 +17,8 @@ export const pizzaSlice = createSlice({
     builder.addCase(
       getPizzas.fulfilled,
       (state: IPizza[], { payload }: IPayloadPizza) => {
-        payload.map((value) => {
+        state.length = 0;
+        payload.pizzas.map((value) => {
           state.push(value);
         });
       }
