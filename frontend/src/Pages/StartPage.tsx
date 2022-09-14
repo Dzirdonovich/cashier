@@ -12,20 +12,15 @@ import { getPizzas } from "../redux/Slices/Pizza/pizzaSlice";
 
 function StartPage() {
   const orders = useAppSelector((state: RootState) => state.order);
-  const pizzas = useAppSelector((state: RootState) => state.pizza);
   const settings = useAppSelector((state) => state.order.settings);
   const dispatch = useAppDispatch();
   dispatch(setAVGPrice());
   dispatch(setOrders());
-  useEffect(() => {
-    orders.titleOrder.length === 0
-      ? dispatch(fetchOrders()) && console.log(orders, orders.titleOrder)
-      : console.log("Ошибка при  запросе заказов");
-    pizzas.length === 0
-      ? dispatch(getPizzas()) && console.log(pizzas)
-      : console.log("Ошибка при  запросе пицц", orders.titleOrder);
-  }, [dispatch, pizzas, orders]);
 
+  useEffect(() => {
+    dispatch(fetchOrders());
+    dispatch(getPizzas());
+  });
   return (
     <div className="p-2 w-full h-full flex justify-between ">
       <div className=" w-4/5 pr-2 flex flex-col  ">

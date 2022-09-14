@@ -6,6 +6,7 @@ class OrderController {
 
     const order = await Order.create({
       name: name,
+
       time:
         new Date(Date.now()).getHours().toString().padStart(2, "0") +
         ":" +

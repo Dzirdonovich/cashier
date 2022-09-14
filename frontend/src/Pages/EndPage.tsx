@@ -3,10 +3,12 @@ import { useAppDispatch, useAppSelector } from "../hooks/reduxHook";
 import React, { ChangeEvent, useState } from "react";
 import InputMask from "react-input-mask";
 import {
+  fetchOrders,
   postOrders,
   setNameState,
   setTelephoneState,
 } from "../redux/Slices/Order/orderSlice";
+import { useNavigate } from "react-router-dom";
 
 function EndPage() {
   const time = useAppSelector((state) => state.order.currentOrder.timeOrder);
@@ -16,6 +18,7 @@ function EndPage() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState<string>("");
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const onClick = (e: ChangeEvent<HTMLInputElement>) => {
     setTelephone(e.target.value);
   };
@@ -52,6 +55,8 @@ function EndPage() {
 
   const onClickButtonCash = () => {
     dispatch(postOrders(state.order));
+    navigate("/");
+    dispatch(fetchOrders());
   };
   const numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "00", "0"];
   return (
