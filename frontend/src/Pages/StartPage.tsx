@@ -20,7 +20,7 @@ function StartPage() {
   useEffect(() => {
     dispatch(fetchOrders());
     dispatch(getPizzas());
-  });
+  }, [orders.currentOrder]);
   return (
     <div className="p-2 w-full h-full flex justify-between ">
       <div className=" w-4/5 pr-2 flex flex-col  ">
