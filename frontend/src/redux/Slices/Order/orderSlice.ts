@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { IOrderState, IPayloadTitleOrder } from "./IOrder";
-import { getPadTime } from "../../../utils/getPadTime";
 
 const initialState: IOrderState = {
   titleOrder: [],
@@ -16,13 +15,14 @@ const initialState: IOrderState = {
       xes: 0,
     },
     id: 0,
-    number: 0,
+    number: "",
     date: "",
     name: "",
     price: 0,
     place: 0,
-    pizzas: [],
+    pizza: [],
     drink: [],
+    telephone: "",
   },
   settings: {
     AVGPrice: 0,
@@ -45,21 +45,17 @@ export const postOrders: any = createAsyncThunk(
   "orders/postOrders",
 
   async (state: IOrderState) => {
-    const { currentItem, ...order } = state.currentOrder;
-    order.number =
-      state.titleOrder.length +
-      "-" +
-      (state.currentOrder.pizzas.length + state.currentOrder.drink.length);
-    order.date =
-      getPadTime(new Date(Date.now()).getHours()).toString() +
-      ":" +
-      getPadTime(new Date(Date.now()).getMinutes()).toString();
-    order.name = "кто-то";
+    const { currentItem, id, price, date, timeOrder, number, ...order } =
+      state.currentOrder;
 
-    const { data } = await axios.post("http://localhost:3001/orders", order);
+    const { data } = await axios.post("http://localhost:5000/api/order", {
+      place: order.place,
+      name: order.name,
+      telephone: order.telephone,
+      pizza: order.pizza,
+    });
 
     console.log(data);
-    state.titleOrder = [];
   }
 );
 
@@ -78,7 +74,7 @@ export const orderSlice = createSlice({
         state.currentOrder.price +
         state.currentOrder.currentItem.price *
           state.currentOrder.currentItem.xes;
-      state.currentOrder.pizzas.push({
+      state.currentOrder.pizza.push({
         ...state.currentOrder.currentItem,
         count: 1,
       });
@@ -97,11 +93,11 @@ export const orderSlice = createSlice({
     setCountPizza(state, { payload }) {
       console.log(payload);
       payload.action === "MINUS"
-        ? state.currentOrder.pizzas.filter(
+        ? state.currentOrder.pizza.filter(
             (value) =>
               value.name === payload.name && value.size === payload.size
           )[0].count--
-        : state.currentOrder.pizzas.filter(
+        : state.currentOrder.pizza.filter(
             (value) =>
               value.name === payload.name && value.size === payload.size
           )[0].count++;
@@ -132,7 +128,7 @@ export const orderSlice = createSlice({
     setAVGPrice(state) {
       let fullPrice = 0;
       state.titleOrder.map((value) => {
-        fullPrice += value.price;
+        return (fullPrice += value.price);
       });
       state.settings.AVGPrice = fullPrice / state.titleOrder.length;
     },
@@ -142,6 +138,17 @@ export const orderSlice = createSlice({
     setLastStep(state, { payload }) {
       state.settings.lastStepChosen = payload;
     },
+    setTelephoneState(state, { payload }) {
+      state.currentOrder.telephone = payload;
+    },
+    setNameState(state, { payload }) {
+      state.currentOrder.name = payload;
+    },
+    setLastData(state, { payload }) {
+      console.log(payload);
+      state.currentOrder.name = payload.name;
+      state.currentOrder.telephone = payload.telephone;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(
@@ -150,7 +157,7 @@ export const orderSlice = createSlice({
         state.titleOrder = [];
         console.log(payload);
         payload.orders.map((value) => {
-          state.titleOrder.push(value);
+          return state.titleOrder.push(value);
         });
       }
     );
@@ -181,4 +188,7 @@ export const {
   setAVGPrice,
   setOrders,
   setLastStep,
+  setLastData,
+  setTelephoneState,
+  setNameState,
 } = orderSlice.actions;

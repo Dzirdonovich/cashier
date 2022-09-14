@@ -32,8 +32,9 @@ export interface ICurrentOrder {
   name: string;
   price: number;
   place: number;
-  pizzas: IPizza[];
+  pizza: IPizza[];
   drink: IOrderDrink[];
+  telephone: string;
 }
 
 interface IEndPayloadOrder {

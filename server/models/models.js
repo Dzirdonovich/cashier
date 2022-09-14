@@ -10,6 +10,9 @@ const Order = sequelize.define("order", {
   name: {
     type: DataTypes.STRING,
   },
+  telephone: {
+    type: DataTypes.STRING,
+  },
   time: {
     type: DataTypes.STRING,
   },
@@ -40,6 +43,9 @@ const PizzasOrder = sequelize.define("pizzaOrder", {
     type: DataTypes.STRING,
   },
   size: {
+    type: DataTypes.INTEGER,
+  },
+  count: {
     type: DataTypes.INTEGER,
   },
 });

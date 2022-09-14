@@ -48,7 +48,7 @@ function StartPage() {
             </div>
           </div>
         </div>
-        <div className="flex justify-between flex-wrap max-h-screen">
+        <div className="flex  box-border  flex-wrap">
           {orders.titleOrder.map((value) => (
             <OrderItem key={"key" + value.id} date={value} />
           ))}

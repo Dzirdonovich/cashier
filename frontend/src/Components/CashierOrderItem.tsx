@@ -7,7 +7,7 @@ function CashierOrderItem({ pizza }: PropsIPizza) {
   const state = useAppSelector((state) => state);
   const dispatch = useAppDispatch();
   const onClickPlus = (pizza: IPizza) => {
-    console.log(state.order.currentOrder.pizzas);
+    console.log(state.order.currentOrder.pizza);
     dispatch(setOrderPrice({ action: "PLUS", ...pizza }));
     dispatch(setCountPizza({ action: "PLUS", ...pizza }));
   };

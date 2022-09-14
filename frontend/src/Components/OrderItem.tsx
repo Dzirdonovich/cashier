@@ -16,7 +16,10 @@ interface PropsDate {
 
 function OrderItem({ date }: PropsDate) {
   return (
-    <div className=" w-1/5  p-3 m-2  rounded-2xl bg-white flex flex-wrap ">
+    <div
+      onClick={() => console.log(date)}
+      className="  w-[23.9%] box-border  p-3 m-2 rounded-2xl bg-white flex flex-wrap "
+    >
       <div className=" w-3/5 text-5xl bg-blue-500 text-center text-white rounded-xl">
         {date.number + "-" + date.pizzaOrder.length}
       </div>

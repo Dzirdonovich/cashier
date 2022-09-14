@@ -9,7 +9,6 @@ import ChangeItem from "../../Components/ChangeItem";
 import {
   fetchOrders,
   getOrderPizza,
-  postOrders,
   setLastStep,
   setOrderPizza,
   setPlaceOrder,
@@ -46,9 +45,9 @@ function CashierPageLayout({ children, page, timeOrder }: LayoutProps) {
   const onClickFormalizeHandler = () => {
     setEndPage(9);
     dispatch(setTimeOrder(time));
-    dispatch(postOrders(allState));
     dispatch(fetchOrders());
     dispatch(setLastStep(true));
+    console.log(allState.currentOrder);
   };
 
   const onClickBack = () => {
@@ -73,7 +72,7 @@ function CashierPageLayout({ children, page, timeOrder }: LayoutProps) {
   return (
     <div className="flex h-screen ">
       <nav className="w-1/12 bg-stone-800">
-        {endPage != 9
+        {endPage !== 9
           ? routes.map((value, index) => (
               <Link
                 className={
@@ -119,7 +118,7 @@ function CashierPageLayout({ children, page, timeOrder }: LayoutProps) {
             ""
           )}
           {allState.settings.orderChosen
-            ? allState.currentOrder.pizzas.map((value) => (
+            ? allState.currentOrder.pizza.map((value) => (
                 <CashierOrderItem pizza={value} />
               ))
             : ""}
